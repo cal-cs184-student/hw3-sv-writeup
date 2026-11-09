@@ -201,6 +201,30 @@
 			\[I = \frac{1.96\sigma}{\sqrt{n}}\]
 			
 where \[\sigma\] is the estimated standard deviation of the sampled illuminance values and (n) is the number of samples taken so far. If I is less than or equal maxTolerance * mean, this means that we are sufficiently confident that the pixel has converged and can break out of the ray tracing loop early. Finally, rather than always dividing the integral estimate by num_samples I keep track of the samples used in the case that tracing is stopped early, and divide by that amount isntead.
+
+			<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="assets/bunny.png" width="400px"/>
+				  <figcaption>CBbunny.png</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunny_rate.png" width="400px"/>
+				  <figcaption>CBbunny_rate.png</figcaption>
+				</td>
+			  </tr><tr>
+				<td style="text-align: center;">
+				  <img src="assets/blob.png" width="400px"/>
+				  <figcaption>blob.png</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/blob_rate.png" width="400px"/>
+				  <figcaption>blob_rate.png</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
 			
 		</div>
 	</body>
