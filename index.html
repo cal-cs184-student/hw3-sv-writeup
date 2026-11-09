@@ -104,7 +104,10 @@
 		</div>
 		
 		<h2>Part 2: Bounding Volume Hierarchy</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		
+			I used a recursive algorithm to construct the BVH. The base case was that if the distance between the start and end primitive was less than or equal to max_leaf_size, then I return the BVH node with its start and end variables set to the start and end primitive respectively, and the right and left children set to null. If there are still more primitives than max_leaf_size, then I set the axis to split based off which one has the greatest distance between start and end. The heuristic I chose for the splitting point was taking the average of the primitives across the chosen axis. This was done by iterating through all of the primitives from start to end, adding their corresponding axis values, dividing by the number of primitives, and setting it as the split point. Finally, I set the node's left and right pointers by calling construct_bvh(start, splitpoint, max_leaf_size) and construct_bvh(splitpoint, end, max_leaf_size) respectively. To account for infinite recursion, I check to see if the splitpoint is equal to either the start or the end pointer, and if so I reset the splitpoint to \[start + count / 2\].
+
+	As shown with the results below, using BVH acceleration significantly improves the rendering speed. 
 
 		<h2>Part 3: Direct Illumination</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
