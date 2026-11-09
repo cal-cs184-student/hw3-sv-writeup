@@ -217,6 +217,8 @@
 			</table>
 		</div>
 
+<br>
+			
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
@@ -232,7 +234,62 @@
 			</table>
 		</div>
 
-		<br> 
+		<br> When setting the max depth to 2 and 3 (2nd and 3rd bounce), the shading is more complex and you can see the colors of the cornell box walls reflected on the bunny (color bleeding). This is because rather than only having 0-1 bounces from the original light source, the additional bounces can capture more extensive indirect illumination from the surrounding surfaces. This contributes to the quality of the image rendering as it has more realistic lighting dynamics when it comes to color and illumination. In more complex environments with varying colors and light sources, using global/indirect illumination is powerful as it can factor in more than just the first light source bounce.
+			
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="assets/bunnym0noncumulative.png" width="250px"/>
+				  <figcaption>isAccumBounces=false bunny at max_depth=0</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunnym1noncumulative.png" width="250px"/>
+				  <figcaption>isAccumBounces=false bunny at max_depth=1</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunnym2noncumulative.png" width="250px"/>
+				  <figcaption>isAccumBounces=false bunny at max_depth=2</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunnym3noncumulative.png" width="250px"/>
+				  <figcaption>isAccumBounces=false bunny at max_depth=3</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunnym4noncumulative.png" width="250px"/>
+				  <figcaption>isAccumBounces=false bunny at max_depth=4</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunnym5.png" width="250px"/>
+				  <figcaption>isAccumBounces=true bunny at max_depth=5</figcaption>
+			  </tr><tr>
+				<td style="text-align: center;">
+				  <img src="assets/bunnym0.png" width="250px"/>
+				  <figcaption>isAccumBounces=true bunny at max_depth=0</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunnym1.png" width="250px"/>
+				  <figcaption>isAccumBounces=true bunny at max_depth=1</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunnym2.png" width="250px"/>
+				  <figcaption>isAccumBounces=true bunny at max_depth=2</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunnym3.png" width="250px"/>
+				  <figcaption>isAccumBounces=true bunny at max_depth=3</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunnym4.png" width="250px"/>
+				  <figcaption>isAccumBounces=true bunny at max_depth=4</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunnym5.png" width="250px"/>
+				  <figcaption>isAccumBounces=false bunny at max_depth=5</figcaption>
+			  </tr>
+			</table>
+		</div>
+			<br>
 
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
@@ -264,7 +321,8 @@
 			  </tr>
 			</table>
 		</div>
-			
+
+			<br>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
