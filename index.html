@@ -103,7 +103,7 @@
 			  </tr>
 			</table>
 		</div>
-			
+			<br>
 	As shown with the results below, using BVH acceleration significantly improves the rendering speed. The smallest difference between the before and after BVH rendering time was with cow.png, which was around 53 seconds faster. The largest difference was with maxplanck.png, which took 10 minutes without BVH and 0.05 seconds with BVH. BVH is able to improve the render time by hierarchically organizing the bounding boxes and reducing the amount of intersection tests between the ray and primitives that need to be run. This shows that the more complex an image is to render, the more impactful using BVH is. The improvement may not be as noticeable with simple images but will be very useful for more complicated images.
 <table>
   <thead>
@@ -179,6 +179,7 @@
 				  <img src="assets/bunnyl4.png" width="400px"/>
 				  <figcaption>4 samples per area light</figcaption>
 				</td>
+			  </tr><tr>
 				<td style="text-align: center;">
 				  <img src="assets/bunnyl16.png" width="400px"/>
 				  <figcaption>16 samples per area light</figcaption>
