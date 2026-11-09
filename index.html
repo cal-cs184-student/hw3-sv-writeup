@@ -99,6 +99,55 @@
 			
 			To implement importance-sampling direct lighting, I follow a similar process to hemisphere lighting. However rather than just iterating through the range of num_samples, I repeat that loop for every light in the scene. If the light is a point light source, then only one sample is taken, and otherwise ns_area_light samples are taken. I create the ray starting from the hit point in the direction of the sampled light. If the created ray intersects with anything, I calculate the estimate with equation above. I set L to the light's radiance using sample_L(), which also populates the sample direction vector wi, the distance distTolight between wi and the hitpoint, and the probability density funciton pdf. I set f to the intersection's bsdf value with bsdf->f(wo, wi_local), where wi_local is wi converted from world to object space, and I set cos equal to wi_local.z. I set p equal to pdf, which was populated earlier with sample_L(). Finally, after summing up the resulting values for each light, I divide by the amount of lights in the scene.
 
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="assets/CBspheres_H_64_32.png" width="400px"/>
+				  <figcaption>CBspheres with hemisphere sampling direct lighting</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunnyl4.png" width="400px"/>
+				  <figcaption>CBspheres with importance sampling direct lighting</figcaption>
+				</td>
+			  </tr><tr>
+				<td style="text-align: center;">
+				  <img src="assets/CBbunny_H_64_32.png" width="400px"/>
+				  <figcaption>CBbunny with hemisphere sampling direct lighting</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunny_64_32.png" width="400px"/>
+				  <figcaption>CBbunny with importance sampling direct lighting</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+			
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="assets/bunnyl1.png" width="400px"/>
+				  <figcaption>1 sample per area light</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunnyl4.png" width="400px"/>
+				  <figcaption>4 samples per area light</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunnyl16.png" width="400px"/>
+				  <figcaption>16 samples per area light</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/bunnyl64.png" width="400px"/>
+				  <figcaption>64 samples per area light</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+			
+
 		<h2>Part 4: Global Illumination</h2>
 		To implement indirect lighting, I recursively called the one_bounce_radiance and at_least_once_bounce_radiance. The base case is when the given ray's depth is at 0, to which we just return the 0 vector L_out. If we are accumulating bounces and the ray's depth is equal 1, then we call one_bounce_radiance and pass in the given ray and intersection, and add the result to L_out. Otherwise, we check the ray if it intersects with anything, and if so then we set L by calling at_least_one_bounce_radiance with the resulting intersection, calculate the same value given by the equation in part 3 with f set with bsdf->sample_f which gets a random incoming ray sample and returns its corresponding diffuseBSDF value, add it to L_out and return it. With russian roulette implemented, if the coin flip returns within the given probability then we return before checking for any intersections. Finally, we update est_radiance_global_illumination to return the result of zero_bounce_radiance + at_least_one_bounce_radiance.
 
