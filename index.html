@@ -88,6 +88,8 @@
 	As shown with the results below, using BVH acceleration significantly improves the rendering speed. 
 
 		<h2>Part 3: Direct Illumination</h2>
+		To implement zero bounce radiance, I simply return the bsdf emission value of the passed in perimeter. To implement one bounce radiance, I return either  hemisphere or importance sampling direct lighting based on the direct_hemisphere_sample variable.
+		
 		To implement hemisphere-sampling direct lighting, we are first given variables to help transform the object space to world space (o2w) and vice versa (w2o), the vector hit point where the intersection occurs (hit_p), the outgoing direction from the intersection point (w_out), and the number of samples (num_samples). For each sample, I use hemisphereSampler->get_sample(), saving it to variable wi, and convert the samples to world space with o2w. I then create a ray starting from the hit point in the direction of the hemisphere sample distance. If the created ray intersects with anything, I calculate the estimate 
 			\[ \frac{f_r(p, \omega_j \rightarrow \omega_r) L_i(p, \omega_j) \cos\theta_j}{p(\omega_j)}\]
 
@@ -98,24 +100,14 @@
 			To implement importance-sampling direct lighting, I follow a similar process to hemisphere lighting. However rather than just iterating through the range of num_samples, I repeat that loop for every light in the scene. If the light is a point light source, then only one sample is taken, and otherwise ns_area_light samples are taken. I create the ray starting from the hit point in the direction of the sampled light. If the created ray intersects with anything, I calculate the estimate with equation above. I set L to the light's radiance using sample_L(), which also populates the sample direction vector wi, the distance distTolight between wi and the hitpoint, and the probability density funciton pdf. I set f to the intersection's bsdf value with bsdf->f(wo, wi_local), where wi_local is wi converted from world to object space, and I set cos equal to wi_local.z. I set p equal to pdf, which was populated earlier with sample_L(). Finally, after summing up the resulting values for each light, I divide by the amount of lights in the scene.
 
 		<h2>Part 4: Global Illumination</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		To implement indirect lighting, I recursively called the one_bounce_radiance and at_least_once_bounce_radiance. The base case is when the given ray's depth is at 0, to which we just return the 0 vector L_out. If we are accumulating bounces and the ray's depth is equal 1, then we call one_bounce_radiance and pass in the given ray and intersection, and add the result to L_out. Otherwise, we check the ray if it intersects with anything, and if so then we set L by calling at_least_one_bounce_radiance with the resulting intersection, calculate the same value given by the equation in part 3 with f set with bsdf->sample_f which gets a random incoming ray sample and returns its corresponding diffuseBSDF value, add it to L_out and return it. With russian roulette implemented, if the coin flip returns within the given probability then we return before checking for any intersections. Finally, we update est_radiance_global_illumination to return the result of zero_bounce_radiance + at_least_one_bounce_radiance.
 
 		<h2>Part 5: Adaptive Sampling</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<h2>(Optional) Part 6: Extra Credit Opportunities</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-		
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
+		Adaptive sampling is a way to intuitively distribute samples to image areas with higher variance or rendering difficulty, rather than using the same amount of samples for every pixel. To do this, at every sample we keep track of the current sum and squared sum of illuminance using est_radiance_global_illumination() and illum(). Then, with those sums we check every samplesPerBatch pixel's illuminance mean and variance up to that point, and calculate the value I with 
+			\[I = \frac{1.96\sigma}{\sqrt{n}}\]
+			
+where (\sigma) is the estimated standard deviation of the sampled illuminance values and (n) is the number of samples taken so far. If I is less than or equal maxTolerance * mean, this means that we are sufficiently confident that the pixel has converged and can break out of the ray tracing loop early. Finally, rather than always dividing the integral estimate by num_samples I keep track of the samples used in the case that tracing is stopped early, and divide by that amount isntead.
+			
 		</div>
 	</body>
 </html>
