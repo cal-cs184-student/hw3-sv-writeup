@@ -106,7 +106,7 @@
 		Adaptive sampling is a way to intuitively distribute samples to image areas with higher variance or rendering difficulty, rather than using the same amount of samples for every pixel. To do this, at every sample we keep track of the current sum and squared sum of illuminance using est_radiance_global_illumination() and illum(). Then, with those sums we check every samplesPerBatch pixel's illuminance mean and variance up to that point, and calculate the value I with 
 			\[I = \frac{1.96\sigma}{\sqrt{n}}\]
 			
-where (\sigma) is the estimated standard deviation of the sampled illuminance values and (n) is the number of samples taken so far. If I is less than or equal maxTolerance * mean, this means that we are sufficiently confident that the pixel has converged and can break out of the ray tracing loop early. Finally, rather than always dividing the integral estimate by num_samples I keep track of the samples used in the case that tracing is stopped early, and divide by that amount isntead.
+where \[\sigma\] is the estimated standard deviation of the sampled illuminance values and (n) is the number of samples taken so far. If I is less than or equal maxTolerance * mean, this means that we are sufficiently confident that the pixel has converged and can break out of the ray tracing loop early. Finally, rather than always dividing the integral estimate by num_samples I keep track of the samples used in the case that tracing is stopped early, and divide by that amount isntead.
 			
 		</div>
 	</body>
