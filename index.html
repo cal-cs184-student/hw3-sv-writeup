@@ -45,31 +45,58 @@
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
-
+			In this homework, I worked on implementing several techniques for ray tracing and path tracing. I set up methods to construct rays, bounding boxes, and acceleration structures (BVH), as well as methods for intersections and illumination/shading. The time it took to complete this homework was longer than the previous two homeworks, and I learned that there were several edge cases and variables that I had to account for when it came to path tracing. I found the adaptive sampling most interesting as it was nice to see how the sample rate images populated themselves and it also contributed to smoother photos. 
+			
+			
 		<h2>Part 1: Ray Generation and Scene Intersection</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		In generate_ray, I constructed a ray that started from the camera position and intersects the given coordinate (x,y). I first started by converting the x and y coordinates to normalized camera space usign the equation 
+			[x_{camera} = (2x-1)\tan\left(\frac{hFov}{2}\cdot\frac{\pi}{180}\right)]
+		for x, and repeating the same for y. I set z to -1 as that is considered the center from the camera's perspective. Finally, I converted the coordinates back to world space by multiplying them by c2w, the given camera-to-world rotation matrix. I constructed the ray setting its d value to the resulting coordinates, its o value to the given camera position pos, its min_t to the given value nClip and finally its max_t to the given value fClip.
 
+			In raytrace_pixel, I take the input coordinate (x,y) and set its corresponding radiance in the samplebuffer. This is done by sampling num_samples times, generating a ray, keeping track of their illumination by summing up their est_radiance_global_illumination value, and finally dividing the resulting sum by the number of samples to estimate their integral. I update the pixel (x,y) in the sample buffer to this integral estimate.
+
+			To compute the ray-triangle intersections, I use the Moller-Trombore algorithm, which sets the ray equation 
+			[\mathbf{o}+t\mathbf{d}] equal to the triangle's barycentric equation [(1-u-v)\mathbf{p}_1+u\mathbf{p}_2+v\mathbf{p}_3] :
+			
+			(\mathbf{o}+t\mathbf{d} = 1-u-v)\mathbf{p}_1+u\mathbf{p}_2+v\mathbf{p}_3]
+
+			By solving for t with this equation, we can check if the ray intersects with the triangle by checking if the resulting t-value is between the ray's max_t and min_t. In the triangle intersect method, I repeat this same moller-trumbore process for determining if the ray intersects with the triangle, and then I further set the resulting intersection's member variables to save the resulting t value, the unit vector of the barycentric equation (1-u-v)p_1 + (u)p_1 + (v)p_2, the primitive to the triangle, and the bsdf to the triangle's bsdf. The information is used by the rendering pipeline to determine the lighting at the intersection point.
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="assets/cube.png" width="400px"/>
+				  <figcaption>Caption goes here.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/cbempty.png" width="400px"/>
+				  <figcaption>cbempty.png</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/cbspheres.png" width="400px"/>
+				  <figcaption>cbspheres.png</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+			
 		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="assets/cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="assets/cube.png" width="400px"/>
+				  <figcaption>cube.png</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="assets/cornell.png" width="400px"/>
+				  <img src="assets/CBempty" width="400px"/>
 				  <figcaption>Caption goes here.</figcaption>
 				</td>
 			  </tr>
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="assets/cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="assets/cornell.png" width="400px"/>
+				  <img src="assets/CBspheres" width="400px"/>
 				  <figcaption>Caption goes here.</figcaption>
 				</td>
 			  </tr>
