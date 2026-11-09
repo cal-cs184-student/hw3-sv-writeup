@@ -84,9 +84,53 @@
 		<h2>Part 2: Bounding Volume Hierarchy</h2>
 		
 			I used a recursive algorithm to construct the BVH. The base case was that if the distance between the start and end primitive was less than or equal to max_leaf_size, then I return the BVH node with its start and end variables set to the start and end primitive respectively, and the right and left children set to null. If there are still more primitives than max_leaf_size, then I set the axis to split based off which one has the greatest distance between start and end. The heuristic I chose for the splitting point was taking the average of the primitives across the chosen axis. This was done by iterating through all of the primitives from start to end, adding their corresponding axis values, dividing by the number of primitives, and setting it as the split point. Finally, I set the node's left and right pointers by calling construct_bvh(start, splitpoint, max_leaf_size) and construct_bvh(splitpoint, end, max_leaf_size) respectively. To account for infinite recursion, I check to see if the splitpoint is equal to either the start or the end pointer, and if so I reset the splitpoint to \[start + count / 2\].
-
-	As shown with the results below, using BVH acceleration significantly improves the rendering speed. 
-
+		
+			<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="assets/cblucy.png" width="400px"/>
+				  <figcaption>cblucy.png</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/maxplanck.png" width="400px"/>
+				  <figcaption>maxplanck.png</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/beast.png" width="400px"/>
+				  <figcaption>beast.png</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+			
+	As shown with the results below, using BVH acceleration significantly improves the rendering speed. The smallest difference between the before and after BVH rendering time was with cow.png, which was around 53 seconds faster. The largest difference was with maxplanck.png, which took 10 minutes without BVH and 0.05 seconds with BVH. BVH is able to improve the render time by hierarchically organizing the bounding boxes and reducing the amount of intersection tests between the ray and primitives that need to be run. This shows that the more complex an image is to render, the more impactful using BVH is. The improvement may not be as noticeable with simple images but will be very useful for more complicated images.
+<table>
+  <thead>
+    <tr>
+      <th>Scene</th>
+      <th>Before Optimization (s)</th>
+      <th>After Optimization (s)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Max Planck</td>
+      <td>651.6738</td>
+      <td>0.0555</td>
+    </tr>
+    <tr>
+      <td>Cow</td>
+      <td>53.2312</td>
+      <td>0.0404</td>
+    </tr>
+    <tr>
+      <td>Lucy</td>
+      <td>419.5451</td>
+      <td>0.0453</td>
+    </tr>
+  </tbody>
+</table>
 		<h2>Part 3: Direct Illumination</h2>
 		To implement zero bounce radiance, I simply return the bsdf emission value of the passed in perimeter. To implement one bounce radiance, I return either  hemisphere or importance sampling direct lighting based on the direct_hemisphere_sample variable.
 		
